@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard – IgnitoSolutions{% endblock %}
+
+{% block content %}
+  <section class="dashboard section">
+    <h2>Dashboard</h2>
+    <p>Welcome to the administrative console.  Use the sections below to manage services and review customer interactions.</p>
+
+    <h3>Services</h3>
+    <a href="{{ url_for('add_service') }}" class="btn small-btn">Add New Service</a>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Price Display</th>
+          <th>Image</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for svc in services %}
+        <tr>
+          <td>{{ svc.id }}</td>
+          <td>{{ svc.name }}</td>
+          <td>{{ svc.description }}</td>
+          <td>{{ svc.price_display }}</td>
+          <td><img src="{{ url_for('static', filename='images/' + svc.image_file) }}" alt="{{ svc.name }}" class="thumb-small" /></td>
+          <td>
+            <a href="{{ url_for('edit_service', service_id=svc.id) }}" class="btn small-btn">Edit</a>
+            <form method="post" action="{{ url_for('delete_service', service_id=svc.id) }}" style="display:inline;">
+              <button type="submit" class="btn small-btn danger">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3>Orders</h3>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Items</th>
+          <th>Total ($)</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.id }}</td>
+          <td>{{ order.items_json }}</td>
+          <td>{{ '%.2f'|format(order.total) }}</td>
+          <td>{{ order.name }}</td>
+          <td>{{ order.email }}</td>
+          <td>{{ order.message }}</td>
+          <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7">No orders yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h3>Contact Submissions</h3>
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Message</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in contacts %}
+        <tr>
+          <td>{{ c.id }}</td>
+          <td>{{ c.name }}</td>
+          <td>{{ c.email }}</td>
+          <td>{{ c.message }}</td>
+          <td>{{ c.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5">No contact messages yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <p><a href="{{ url_for('logout') }}">Log Out</a></p>
+  </section>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% if service %}
+  {% set page_title = 'Edit Service' %}
+{% else %}
+  {% set page_title = 'Add Service' %}
+{% endif %}
+
+{% block title %}{{ page_title }} – IgnitoSolutions{% endblock %}
+
+{% block content %}
+  <section class="service-form section">
+    <h2>{{ page_title }}</h2>
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="post">
+      <label>Name</label>
+      <input type="text" name="name" value="{{ service.name if service else '' }}" required />
+      <label>Description</label>
+      <textarea name="description" rows="4" required>{{ service.description if service else '' }}</textarea>
+      <label>Price Display</label>
+      <input type="text" name="price_display" value="{{ service.price_display if service else '' }}" required />
+      <label>Image File (filename in static/images)</label>
+      <input type="text" name="image_file" value="{{ service.image_file if service else '' }}" />
+      <button type="submit">Save</button>
+      <a href="{{ url_for('dashboard') }}" class="btn small-btn">Cancel</a>
+    </form>
+  </section>
+{% endblock %}
