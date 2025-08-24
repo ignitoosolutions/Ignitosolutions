@@ -162,19 +162,27 @@ def index():
     return render_template('index.html', services=services)
 
 
-@app.route('/contact', methods=['POST'])
-def contact():
-    """Handle contact form submissions via AJAX."""
-    data = request.form
-    name = data.get('name')
-    email = data.get('email')
-    message = data.get('message')
-    if not all([name, email, message]):
-        return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
-    contact = Contact(name=name, email=email, message=message)
-    db.session.add(contact)
-    db.session.commit()
-    return jsonify({'status': 'success'})
+@app.route('/about')
+def about_page():
+    """Serve the standalone about page."""
+    return render_template('about.html')
+
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact_page():
+    """Render the contact page and handle AJAX form submissions."""
+    if request.method == 'POST':
+        data = request.form
+        name = data.get('name')
+        email = data.get('email')
+        message = data.get('message')
+        if not all([name, email, message]):
+            return jsonify({'status': 'error', 'message': 'All fields are required.'}), 400
+        contact = Contact(name=name, email=email, message=message)
+        db.session.add(contact)
+        db.session.commit()
+        return jsonify({'status': 'success'})
+    return render_template('contact.html')
 
 
 @app.route('/order', methods=['POST'])
