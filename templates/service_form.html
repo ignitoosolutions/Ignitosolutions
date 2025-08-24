@@ -1,30 +1,33 @@
 {% extends 'base.html' %}
-
-{% if service %}
-  {% set page_title = 'Edit Service' %}
-{% else %}
-  {% set page_title = 'Add Service' %}
-{% endif %}
-
-{% block title %}{{ page_title }} – IgnitoSolutions{% endblock %}
-
+{% block title %}Services – IgnitoSolutions{% endblock %}
 {% block content %}
-  <section class="service-form section">
-    <h2>{{ page_title }}</h2>
-    {% if error %}
-    <p class="error">{{ error }}</p>
-    {% endif %}
-    <form method="post">
-      <label>Name</label>
-      <input type="text" name="name" value="{{ service.name if service else '' }}" required />
-      <label>Description</label>
-      <textarea name="description" rows="4" required>{{ service.description if service else '' }}</textarea>
-      <label>Price Display</label>
-      <input type="text" name="price_display" value="{{ service.price_display if service else '' }}" required />
-      <label>Image File (filename in static/images)</label>
-      <input type="text" name="image_file" value="{{ service.image_file if service else '' }}" />
-      <button type="submit">Save</button>
-      <a href="{{ url_for('dashboard') }}" class="btn small-btn">Cancel</a>
-    </form>
-  </section>
+<section class="services-section">
+  <h2>Services Cost Calculator</h2>
+  <form id="calculator-form" class="calc">
+    <label>Service</label>
+    <select id="service-select">
+      {% for s in services %}
+        <option value="{{ extract_price(s.price_display) }}" data-name="{{ s.name }}">
+          {{ s.name }} ({{ s.price_display }})
+        </option>
+      {% endfor %}
+    </select>
+    <label>Quantity</label>
+    <input id="quantity" type="number" value="1" min="1">
+    <button id="calc-btn" type="button">Estimate</button>
+    <div id="calc-result">Total: $0.00</div>
+  </form>
+
+  <div class="services-grid">
+    {% for s in services %}
+      <div class="service-card" data-id="{{ s.id }}" data-name="{{ s.name }}"
+           data-price="{{ extract_price(s.price_display) }}">
+        <h3>{{ s.name }}</h3>
+        <p>{{ s.description }}</p>
+        <div class="price">{{ s.price_display }}</div>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+    {% endfor %}
+  </div>
+</section>
 {% endblock %}
